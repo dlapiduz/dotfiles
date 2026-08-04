@@ -1,0 +1,45 @@
+#
+# Global mise config -> ~/.config/mise/config.toml
+#
+# Language runtimes and CLI tools for this machine. Versions are pinned; bump
+# deliberately with `mise use -g <tool>@<version>` or `mise upgrade`.
+#
+# Per-project overrides work as usual via a project mise.toml or .tool-versions.
+#
+
+[tools]
+# Keep python on a recent patch release: older python-build-standalone builds
+# predate GitHub artifact attestations and mise rejects them.
+python = "3.12.13"
+ruby   = "3.3.5"
+node   = "26.0.0"
+go     = "1.26.3"
+erlang = "28.5"
+elixir = "1.19.5"
+uv     = "0.12.1"
+direnv = "2.34.0"
+
+# opencode ships a standalone binary; aws-cdk is npm and uses the node above.
+opencode        = "1.15.10"
+"npm:aws-cdk"   = "2.1124.1"
+
+# Claude Code. A standalone binary (aqua:anthropics/claude-code), not an npm
+# package, so it isn't tied to a language runtime. Deliberately unpinned: it
+# releases most days, and a pin would report "missing" almost immediately.
+# NOTE: this shadows a native ~/.local/bin/claude install if you have one —
+# mise activates last. Its built-in self-update won't manage the mise copy;
+# use `mise upgrade claude`.
+claude = "latest"
+
+# Self-contained CLI binaries. Update with `mise upgrade`, not `brew upgrade`.
+gh       = "2.92.0"
+hugo     = "0.161.1"
+awscli   = "2.34.53"
+git-lfs  = "3.7.1"
+tmux     = "3.6b"
+
+# NOTE: mise's `core:rust` backend does not install Rust — it symlinks its
+# install dir to ~/.cargo/bin, delegating to rustup. Keep rustup installed;
+# `rustup update` is what actually changes the version. This pin only records
+# intent.
+rust = "1.97.1"

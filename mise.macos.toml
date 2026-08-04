@@ -1,0 +1,40 @@
+#
+# macos packages (Homebrew)
+#
+# Loaded only when MISE_ENV=macos — see README.md.
+#
+
+[bootstrap.packages]
+
+"brew:coreutils"  = "latest"   # GNU; mise only offers uutils, a different project
+"brew:curl"       = "latest"
+"brew:wget"       = "latest"
+"brew:git"         = "latest"
+"brew:vim"         = "latest"   # newer than the system vim
+"brew:git-secrets" = "latest"
+"brew:ansible"      = "latest"   # pipx:ansible exists but is a major version bump
+
+"brew-cask:ghostty"            = "latest"
+"brew-cask:visual-studio-code" = "latest"
+"brew-cask:cmux"               = "latest"
+"brew-cask:brave-browser" = "latest"
+"brew-cask:google-chrome" = "latest"
+"brew-cask:chromedriver"  = "latest"
+"brew-cask:rectangle"  = "latest"
+"brew-cask:1password"  = "latest"
+"brew-cask:slack"           = "latest"
+"brew-cask:signal"          = "latest"
+"brew-cask:whatsapp"        = "latest"
+"brew-cask:claude"                 = "latest"
+"brew-cask:seafile-client"         = "latest"
+
+# NOT MANAGED HERE — mise can't resolve these casks, and a single unresolvable
+# cask aborts the whole packages step. Install them by hand:
+#
+#   firefox          unsupported artifact type: command_wrapper
+#   zoom             unsupported artifact type: postflight_steps
+#   microsoft-teams  pkg installer choices not supported yet
+#   authy            delisted from homebrew-cask (no API metadata; 404)
+#   wireshark        no cask API metadata
+#
+# Re-test after a `mise self-update`; add any that start working.

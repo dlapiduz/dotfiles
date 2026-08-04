@@ -1,0 +1,192 @@
+#
+# diego's dotfiles — see README.md
+#
+# Apply everything:   mise bootstrap
+# Dotfiles only:      mise dotfiles apply
+# Check drift:        mise bootstrap status
+#
+
+###############################################################################
+# Dotfiles                                                                    #
+###############################################################################
+# Sources resolve relative to this file. Default mode is "symlink", so editing
+# ~/.zshrc edits home/zshrc in this repo and the change shows up in git status.
+
+[dotfiles]
+"~/.config/mise/config.toml" = "home/mise-global.toml"   # global [tools]
+"~/.zshrc"           = "home/zshrc"
+"~/.p10k.zsh"        = "home/p10k.zsh"
+"~/.vimrc"           = "home/vimrc"
+"~/.gitconfig"       = "home/gitconfig"
+"~/.gitignore_global" = "home/gitignore_global"
+
+###############################################################################
+# Git repos (cloned before dotfiles are applied)                              #
+###############################################################################
+
+[bootstrap.repos]
+"~/.oh-my-zsh" = { url = "https://github.com/ohmyzsh/ohmyzsh.git", ref = "master" }
+"~/.oh-my-zsh/custom/themes/powerlevel10k" = { url = "https://github.com/romkatv/powerlevel10k.git", ref = "master" }
+
+###############################################################################
+# System packages                                                             #
+###############################################################################
+# Homebrew handles system libraries and GUI apps; mise handles runtimes and
+# self-contained CLI binaries. See "Homebrew vs mise" in README.md.
+#
+# macOS and Linux entries live side by side: mise skips any entry whose package
+# manager isn't available on the running platform ("skipped (only available on
+# linux)"), so one file serves both.
+
+###############################################################################
+# System packages                                                             #
+###############################################################################
+# Split by platform because mise has no per-entry OS filter for
+# [bootstrap.packages], and `brew:` entries do NOT self-skip on Linux — mise
+# would install Linuxbrew to satisfy them. brew/cask live in mise.macos.toml,
+# apt in mise.linux.toml; both are selected by MISE_ENV.
+#
+# Runtimes and CLI binaries are in home/mise-global.toml, not here.
+
+###############################################################################
+# User settings                                                               #
+###############################################################################
+
+[bootstrap.user]
+login_shell = "/bin/zsh"
+
+###############################################################################
+# macOS defaults                                                              #
+###############################################################################
+# Only bool / integer / float / string values are supported here. Array- and
+# dict-valued defaults, anything needing sudo or -currentHost, PlistBuddy, and
+# pmset live in scripts/macos-extras.sh (`mise run macos`).
+#
+# See README.md for defaults that were deliberately left out as dead on
+# current macOS — don't add them back.
+
+[bootstrap.macos.defaults]
+
+NSGlobalDomain = {
+  # General UI/UX
+  NSNavPanelExpandedStateForSaveMode = true,
+  NSNavPanelExpandedStateForSaveMode2 = true,
+  PMPrintingExpandedStateForPrint = true,
+  PMPrintingExpandedStateForPrint2 = true,
+  # Disable smart dashes and auto-correct — annoying when typing code
+  NSAutomaticDashSubstitutionEnabled = false,
+  NSAutomaticSpellingCorrectionEnabled = false,
+  # Trackpad / mouse / keyboard
+  "com.apple.mouse.tapBehavior" = 1,          # tap to click
+  "com.apple.swipescrolldirection" = false,   # disable "natural" scrolling
+  "com.apple.mouse.forceClick" = false,
+  AppleKeyboardUIMode = 3,                    # full keyboard access for all controls
+  KeyRepeat = 1,                              # blazingly fast key repeat
+  InitialKeyRepeat = 10,
+  # Finder spring loading
+  "com.apple.springing.enabled" = true,
+  "com.apple.springing.delay" = 0.0,
+  # Web inspector context menu in web views
+  WebKitDeveloperExtras = true,
+}
+
+# Suppresses the "downloaded from the internet, are you sure?" prompt.
+# Deliberate tradeoff — keep only if you mean it.
+"com.apple.LaunchServices" = { LSQuarantine = false }
+"com.apple.CrashReporter" = { DialogType = "none" }
+
+"com.apple.driver.AppleBluetoothMultitouch.trackpad" = { Clicking = true }
+
+# NOTE: `com.apple.screencapture location` and `com.apple.finder
+# NewWindowTargetPath` need an absolute $HOME path. mise expands neither `~`
+# nor `{{env.HOME}}` in defaults values, and hardcoding /Users/diego would
+# break on another machine — so both live in scripts/macos-extras.sh.
+
+"com.apple.finder" = {
+  NewWindowTarget = "PfDe",                        # new windows open at Desktop
+  ShowExternalHardDrivesOnDesktop = true,
+  ShowHardDrivesOnDesktop = true,
+  ShowMountedServersOnDesktop = true,
+  ShowRemovableMediaOnDesktop = true,
+  ShowStatusBar = true,
+  ShowPathbar = true,
+  _FXShowPosixPathInTitle = true,
+  _FXSortFoldersFirst = true,
+  FXDefaultSearchScope = "SCcf",                   # search current folder
+  FXEnableExtensionChangeWarning = false,
+  FXPreferredViewStyle = "Nlsv",                   # list view everywhere
+  WarnOnEmptyTrash = false,
+}
+
+# Avoid .DS_Store on network / USB volumes
+"com.apple.desktopservices" = { DSDontWriteNetworkStores = true, DSDontWriteUSBStores = true }
+
+"com.apple.dock" = {
+  "mouse-over-hilite-stack" = true,
+  tilesize = 42,
+  mineffect = "scale",
+  "minimize-to-application" = true,
+  "enable-spring-load-actions-on-all-items" = true,
+  "show-process-indicators" = true,
+  launchanim = true,
+  "expose-animation-duration" = 0.1,
+  "expose-group-by-app" = false,
+  autohide = true,
+  showhidden = true,
+}
+
+"com.apple.TimeMachine" = { DoNotOfferNewDisksForBackup = true }
+
+"com.apple.ActivityMonitor" = {
+  OpenMainWindow = true,
+  IconType = 5,           # visualize CPU usage in the Dock icon
+  ShowCategory = 0,       # show all processes
+  SortColumn = "CPUUsage",
+  SortDirection = 0,
+}
+
+"com.apple.SoftwareUpdate" = {
+  AutomaticCheckEnabled = true,
+  ScheduleFrequency = 1,      # check daily
+  AutomaticDownload = 1,
+  CriticalUpdateInstall = 1,
+  ConfigDataInstall = 1,
+}
+
+"com.google.Chrome" = { DisablePrintPreview = true, PMPrintingExpandedStateForPrint2 = true }
+
+###############################################################################
+# Hooks                                                                       #
+###############################################################################
+# Restart the apps whose defaults we just rewrote, so changes take effect.
+
+[bootstrap.hooks]
+# Exclude unwanted oh-my-zsh plugins (see the script for why this is
+# sparse-checkout rather than `rm -rf`).
+post-repos = "bash scripts/omz-sparse-checkout.sh"
+post-defaults = "bash scripts/restart-affected-apps.sh"
+
+###############################################################################
+# Tasks                                                                       #
+###############################################################################
+
+[tasks.macos]
+description = "macOS tweaks that [bootstrap.macos.defaults] can't express (needs sudo)"
+run = "bash scripts/macos-extras.sh"
+
+[tasks.ghostty]
+description = "Install Ghostty on Linux (no official repo/Flatpak; see the script)"
+run = "bash scripts/install-ghostty.sh"
+
+[tasks.linux-desktop]
+description = "Key repeat and energy settings for COSMIC/GNOME (mirrors the macOS defaults)"
+run = "bash scripts/linux-desktop.sh"
+
+[tasks.fonts]
+description = "Install the MesloLGS Nerd Font patched fonts used by powerlevel10k"
+run = "bash scripts/install-fonts.sh"
+
+# Runs at the end of `mise bootstrap` (step 10).
+[tasks.bootstrap]
+description = "Final setup steps after bootstrap"
+depends = ["fonts"]

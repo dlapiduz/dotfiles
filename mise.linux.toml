@@ -1,0 +1,99 @@
+#
+# Linux packages — loaded only when MISE_ENV=linux (see README.md).
+#
+# Debian/Ubuntu (apt) and Fedora (dnf) entries live side by side: mise skips
+# any whose manager isn't installed ("skipped (apt not found)"), so one file
+# serves both. flatpak covers GUI apps on either. Together these are the
+# counterpart to the Homebrew formulae and casks in mise.macos.toml.
+#
+
+[bootstrap.packages]
+
+# --- shell & core CLI ---
+# zsh isn't preinstalled on Pop!_OS and [bootstrap.user] makes it the login
+# shell; packages install before that step, so the ordering works.
+"apt:zsh"          = "latest"
+"apt:git"          = "latest"
+"apt:vim"          = "latest"
+"apt:curl"         = "latest"
+"apt:wget"         = "latest"
+"apt:coreutils"    = "latest"
+"apt:git-secrets"  = "latest"
+"apt:ansible"      = "latest"
+
+# --- build dependencies ---
+# macOS gets prebuilt binaries for everything in home/mise-global.toml, but on
+# Linux mise compiles ruby (ruby-build) and erlang (kerl) from source. Without
+# these the build fails late and unhelpfully — ruby dies on `psych` for want of
+# libyaml-dev, erlang on missing ncurses/ssl/odbc headers.
+"apt:build-essential" = "latest"
+"apt:autoconf"        = "latest"
+"apt:m4"              = "latest"
+"apt:patch"           = "latest"
+"apt:libssl-dev"      = "latest"
+"apt:libyaml-dev"     = "latest"
+"apt:libreadline-dev" = "latest"
+"apt:zlib1g-dev"      = "latest"
+"apt:libgmp-dev"      = "latest"
+"apt:libncurses-dev"  = "latest"
+"apt:libffi-dev"      = "latest"
+"apt:libgdbm-dev"     = "latest"
+"apt:libdb-dev"       = "latest"
+"apt:uuid-dev"        = "latest"
+"apt:libssh-dev"      = "latest"
+"apt:unixodbc-dev"    = "latest"
+"apt:libsctp-dev"     = "latest"
+
+##############################  Fedora (dnf)  #################################
+# Mirrors the apt list above. All names verified against Fedora 44.
+
+"dnf:zsh"          = "latest"
+"dnf:git"          = "latest"
+"dnf:vim-enhanced" = "latest"   # Fedora minimal only ships vim-minimal (no ~/.vimrc support)
+"dnf:curl"         = "latest"
+"dnf:wget2-wget"   = "latest"   # Fedora replaced wget with wget2; this shim provides /usr/bin/wget
+"dnf:coreutils"    = "latest"
+"dnf:ansible"      = "latest"
+# NOTE: no git-secrets in the Fedora repos — install by hand if wanted.
+
+# --- build dependencies (same purpose as the apt block above) ---
+"dnf:gcc"                 = "latest"
+"dnf:gcc-c++"             = "latest"
+"dnf:make"                = "latest"
+"dnf:autoconf"            = "latest"
+"dnf:m4"                  = "latest"
+"dnf:patch"               = "latest"
+"dnf:openssl-devel"       = "latest"
+"dnf:libyaml-devel"       = "latest"
+"dnf:readline-devel"      = "latest"
+"dnf:zlib-ng-compat-devel" = "latest"  # Fedora dropped zlib; this provides zlib.h and Provides: zlib-devel
+"dnf:gmp-devel"           = "latest"
+"dnf:ncurses-devel"       = "latest"
+"dnf:libffi-devel"        = "latest"
+"dnf:gdbm-devel"          = "latest"
+"dnf:libdb-devel"         = "latest"
+"dnf:libuuid-devel"       = "latest"
+"dnf:libssh-devel"        = "latest"
+"dnf:unixODBC-devel"      = "latest"
+"dnf:lksctp-tools-devel"  = "latest"
+
+# --- GUI apps (flatpak), mirroring the macOS casks ---
+# mise installs these with `flatpak install --system`, which needs polkit
+# authorization — run the first bootstrap from a desktop terminal so the prompt
+# can appear. Flathub must also exist as a *system* remote:
+#   sudo flatpak remote-add --system --if-not-exists flathub \
+#     https://dl.flathub.org/repo/flathub.flatpakrepo
+"flatpak:com.visualstudio.code"       = "latest"
+"flatpak:com.brave.Browser"           = "latest"
+"flatpak:com.google.Chrome"           = "latest"
+"flatpak:com.slack.Slack"             = "latest"
+"flatpak:org.signal.Signal"           = "latest"
+"flatpak:com.onepassword.OnePassword" = "latest"   # desktop app, not the CLI
+"flatpak:com.seafile.Client"          = "latest"
+
+# No Linux counterpart for these macOS casks:
+#   ghostty      not on Flathub (build from source, or use the COSMIC terminal)
+#   claude       no official Linux desktop app
+#   rectangle    window tiling is built into COSMIC/GNOME
+#   whatsapp     only unofficial third-party wrappers on Flathub
+#   chromedriver not a GUI app; install via apt or mise if needed

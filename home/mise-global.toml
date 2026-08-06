@@ -38,6 +38,19 @@ awscli   = "2.34.53"
 git-lfs  = "3.7.1"
 tmux     = "3.6b"
 
+# 1Password CLI — installs as `op`. Distinct from the desktop app, which comes
+# from flatpak on Linux / cask on macOS; this is the scriptable half.
+#
+# Used to keep secrets off disk: ansible reads its vault password from an
+# EXECUTABLE ~/.ansible/vault_pass, so that file can be a script calling
+#   op read "op://<vault>/<item>/password"
+# instead of holding the password in plaintext. No ansible.cfg change needed —
+# ansible runs the file when it is executable and reads it when it is not.
+#
+# Needs "Integrate with 1Password CLI" enabled in the desktop app's Developer
+# settings; without it `op` prompts for a full sign-in every invocation.
+"1password-cli" = "2.38.1"
+
 # NOTE: mise's `core:rust` backend does not install Rust — it symlinks its
 # install dir to ~/.cargo/bin, delegating to rustup. Keep rustup installed;
 # `rustup update` is what actually changes the version. This pin only records

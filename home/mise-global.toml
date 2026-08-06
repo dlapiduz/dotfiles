@@ -38,6 +38,14 @@ awscli   = "2.34.53"
 git-lfs  = "3.7.1"
 tmux     = "3.6b"
 
+# Terraform. Previously unmanaged, which let the machines drift apart while all
+# driving the SAME shared MinIO state for the homelab: the Mac had 1.15.4 from
+# brew, Fedora 1.15.8 from HashiCorp's dnf repo, the (now dead) desktopolis a
+# snap build. Pinning it here makes one version authoritative everywhere and
+# removes the need for a third-party repo on Linux.
+# Keep >= 1.11 — terraform/*/versions.tf requires it for S3 native `use_lockfile`.
+terraform = "1.15.8"
+
 # 1Password CLI — installs as `op`. Distinct from the desktop app, which comes
 # from flatpak on Linux / cask on macOS; this is the scriptable half.
 #

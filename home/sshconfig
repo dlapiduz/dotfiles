@@ -1,0 +1,34 @@
+# ~/.ssh/config — managed in github.com/dlapiduz/dotfiles (home/sshconfig).
+#
+# 1Password's SSH agent lives at a DIFFERENT path on every platform, and the
+# path most guides give (~/.1password/agent.sock) is the Linux *native package*
+# one — it does not exist on a Flatpak install, which is how Linux boxes here
+# get the desktop app. Rather than keep per-OS copies of this file, each block
+# below is gated on the socket actually existing, so the right one wins on each
+# machine and none of them apply where 1Password isn't installed.
+#
+# ssh_config takes the FIRST value obtained for a keyword, so order is the
+# precedence order. If no socket exists, no IdentityAgent is set and ssh falls
+# back to normal key files — which is what keeps a machine working before
+# 1Password is set up on it.
+#
+# Scoped to github.com ON PURPOSE. With `Host *` (the old hand-written Mac
+# config) every SSH connection routes through 1Password, so a locked vault
+# breaks `ansible all -m ping` and any unattended run. Homelab hosts should keep
+# authenticating with the on-disk ~/.ssh/id_ed25519, which needs no GUI.
+
+# macOS — desktop app (cask)
+Match host github.com exec "test -S '%d/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock'"
+    IdentityAgent "%d/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# Linux — Flatpak build (what mise.linux.toml installs)
+Match host github.com exec "test -S '%d/.var/app/com.onepassword.OnePassword/data/1Password/agent.sock'"
+    IdentityAgent "%d/.var/app/com.onepassword.OnePassword/data/1Password/agent.sock"
+
+# Linux — native rpm/deb build
+Match host github.com exec "test -S '%d/.1password/agent.sock'"
+    IdentityAgent "%d/.1password/agent.sock"
+
+# Machine-specific overrides that should not live in a public repo (jump hosts,
+# internal aliases). Optional — ssh ignores a missing include.
+Include ~/.ssh/config.local

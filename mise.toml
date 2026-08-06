@@ -19,6 +19,7 @@
 "~/.vimrc"           = "home/vimrc"
 "~/.gitconfig"       = "home/gitconfig"
 "~/.gitignore_global" = "home/gitignore_global"
+"~/.ssh/config"      = "home/sshconfig"          # 1Password agent paths, per-OS
 
 ###############################################################################
 # Git repos (cloned before dotfiles are applied)                              #

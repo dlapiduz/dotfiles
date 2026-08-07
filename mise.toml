@@ -82,8 +82,8 @@ NSGlobalDomain = {
   "com.apple.swipescrolldirection" = false,   # disable "natural" scrolling
   "com.apple.mouse.forceClick" = false,
   AppleKeyboardUIMode = 3,                    # full keyboard access for all controls
-  KeyRepeat = 1,                              # blazingly fast key repeat
-  InitialKeyRepeat = 10,
+  KeyRepeat = 2,                              # fast key repeat (30 ms between repeats)
+  InitialKeyRepeat = 15,                      # 225 ms before repeating; 150 ms fired accidentally
   # Finder spring loading
   "com.apple.springing.enabled" = true,
   "com.apple.springing.delay" = 0.0,

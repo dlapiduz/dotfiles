@@ -251,8 +251,8 @@ The units differ three ways, which is the whole reason this needs a script:
 
 | Setting | macOS | COSMIC | GNOME |
 | --- | --- | --- | --- |
-| repeat delay | `InitialKeyRepeat = 10` (x15 ms) | `repeat_delay: 150` (ms) | `delay 150` (ms) |
-| repeat speed | `KeyRepeat = 1` (x15 ms) | `repeat_rate: 66` (**Hz**) | `repeat-interval 15` (ms) |
+| repeat delay | `InitialKeyRepeat = 15` (x15 ms) | `repeat_delay: 225` (ms) | `delay 225` (ms) |
+| repeat speed | `KeyRepeat = 2` (x15 ms) | `repeat_rate: 33` (**Hz**) | `repeat-interval 30` (ms) |
 | screen off | `pmset displaysleep 30` (min) | `screen_off_time Some(1800000)` (**ms**) | `idle-delay 1800` (**s**) |
 | suspend on AC | *never* | `suspend_on_ac_time None` | `sleep-inactive-ac-type 'nothing'` |
 | suspend on battery | `pmset -b sleep 60` (min) | `suspend_on_battery_time Some(3600000)` | `sleep-inactive-battery-timeout 3600` |

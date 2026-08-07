@@ -10,8 +10,8 @@
 #
 #   macOS                              equivalent
 #   ---------------------------------  ---------------------------------------
-#   InitialKeyRepeat = 10  (x15ms)     150 ms before the first repeat
-#   KeyRepeat = 1          (x15ms)     15 ms between repeats -> 66 repeats/sec
+#   InitialKeyRepeat = 15  (x15ms)     225 ms before the first repeat
+#   KeyRepeat = 2          (x15ms)     30 ms between repeats -> 33 repeats/sec
 #   pmset displaysleep 30              screen off after 30 min
 #   pmset -c sleep 0                   never suspend on AC
 #   pmset -b sleep 60                  suspend after 60 min on battery
@@ -26,9 +26,9 @@ if [ "$(uname -s)" = "Darwin" ]; then
   exit 0
 fi
 
-REPEAT_DELAY_MS=150
-REPEAT_INTERVAL_MS=15
-REPEAT_RATE_HZ=66          # 1000 / 15, rounded
+REPEAT_DELAY_MS=225
+REPEAT_INTERVAL_MS=30
+REPEAT_RATE_HZ=33          # 1000 / 30, rounded
 
 SCREEN_OFF_MIN=30
 SUSPEND_AC_MIN=0           # 0 = never suspend while on AC

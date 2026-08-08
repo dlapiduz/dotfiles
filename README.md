@@ -32,8 +32,14 @@ Verified on **Pop!_OS 24.04** (apt) and **Fedora 44** (dnf).
 Fedora renames two things you'd otherwise get wrong: `wget` is now the
 `wget2-wget` shim, and `zlib-devel` no longer exists — `zlib-ng-compat-devel`
 provides `zlib.h` and declares `Provides: zlib-devel`. `git-secrets` has no
-Fedora package at all and is install-by-hand there. Fedora already ships
-flathub as a *system* remote, so the remote-add below is Debian-only.
+Fedora package at all and is install-by-hand there.
+
+**1Password is the native rpm, not a flatpak.** The Flatpak build is sandboxed
+out of system-authentication unlock *and* the SSH agent, which breaks `op read`
+(the homelab `~/.ansible/vault_pass` shim) and the github.com `IdentityAgent` in
+`home/sshconfig`. It needs 1Password's own yum repo added once before
+`mise bootstrap` — mise can't add repos, so the packages step fails without it.
+The commands are in the `dnf:1password` comment in `mise.linux.toml`.
 
 ### Linux: two extra steps
 

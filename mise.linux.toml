@@ -77,6 +77,29 @@
 "dnf:unixODBC-devel"      = "latest"
 "dnf:lksctp-tools-devel"  = "latest"
 
+# --- 1Password desktop app (native rpm, NOT flatpak) ---
+# The Flatpak build is sandboxed out of two things this setup depends on:
+# per 1Password's own docs you "won't be able to unlock 1Password or 1Password
+# CLI with system authentication" and "won't be able to use the SSH agent".
+# That breaks `op read` in ~/.ansible/vault_pass (homelab) and the github.com
+# IdentityAgent in home/sshconfig. So it's the rpm here, not a flatpak: entry.
+#
+# ⚠️ Needs 1Password's yum repo, which mise cannot add — do this once first or
+# the packages step fails with "no match for argument: 1password":
+#   sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
+#   sudo tee /etc/yum.repos.d/1password.repo <<'REPO'
+#   [1password]
+#   name=1Password Stable Channel
+#   baseurl=https://downloads.1password.com/linux/rpm/stable/$basearch
+#   enabled=1
+#   gpgcheck=1
+#   repo_gpgcheck=1
+#   gpgkey="https://downloads.1password.com/linux/keys/1password.asc"
+#   REPO
+#
+# No apt: counterpart — Debian needs 1Password's own apt repo; add by hand.
+"dnf:1password"           = "latest"
+
 # --- GUI apps (flatpak), mirroring the macOS casks ---
 # mise installs these with `flatpak install --system`, which needs polkit
 # authorization — run the first bootstrap from a desktop terminal so the prompt
@@ -88,8 +111,8 @@
 "flatpak:com.google.Chrome"           = "latest"
 "flatpak:com.slack.Slack"             = "latest"
 "flatpak:org.signal.Signal"           = "latest"
-"flatpak:com.onepassword.OnePassword" = "latest"   # desktop app, not the CLI
 "flatpak:com.seafile.Client"          = "latest"
+# 1password is NOT here — it needs the native rpm; see the dnf: block above.
 
 # No Linux counterpart for these macOS casks:
 #   ghostty      not on Flathub (build from source, or use the COSMIC terminal)
